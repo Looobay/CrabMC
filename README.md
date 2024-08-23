@@ -6,9 +6,9 @@ Also guys if you see something wrong in the code about the Minecraft EULA please
 
 * Because I like Rust.
 * Because I like Minecraft.
-* Because I heard Minecraft was slow and wanted to fix it in the server-side code (I'm a clown by the way).
+* Because I heard Minecraft was slow and wanted to fix it in the server-side code (I don't know how).
 
-## What is the goal of the project?
+## What are the goals of the project?
 
 * To replace the vanilla Minecraft server.
 * To be a blazing fast software!
