@@ -1,13 +1,11 @@
-use std::{fs, io};
-use std::fmt::format;
-use std::fs::{File, OpenOptions};
-use std::io::{BufReader, BufWriter, Write};
-use std::path::Path;
 use chrono::Local;
 use colored::Colorize;
 use fern::Dispatch;
 use log::{error, info, warn};
 use std::error;
+use std::fs::OpenOptions;
+use std::path::Path;
+use std::{fs, io};
 
 // ==========================================================
 // Setup the logging system ; it also saves the logs in files.
@@ -42,8 +40,16 @@ pub fn setup_logging() -> Result<(), Box<dyn error::Error>> {
     }
 
     // Set up logging
-    let log_file = OpenOptions::new().write(true).create(true).truncate(true).open(log_file_name)?;
-    let compress_log_file = OpenOptions::new().write(true).create(true).truncate(true).open(&compressed_log_file_name)?;
+    let log_file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(log_file_name)?;
+    let compress_log_file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(&compressed_log_file_name)?;
 
     let console_dispatch = Dispatch::new()
         .format(|out, message, record| {
@@ -145,7 +151,10 @@ pub fn logs_size() {
                 let lil_entry = match lil_entry {
                     Ok(sous_entry) => sous_entry,
                     Err(e) => {
-                        error!("Error when reading entry of directory inside directory: {}", e);
+                        error!(
+                            "Error when reading entry of directory inside directory: {}",
+                            e
+                        );
                         continue;
                     }
                 };
@@ -153,7 +162,10 @@ pub fn logs_size() {
                 let lil_metadata = match lil_entry.metadata() {
                     Ok(sous_metadata) => sous_metadata,
                     Err(e) => {
-                        error!("Error when getting metadata of directory inside directory: {}", e);
+                        error!(
+                            "Error when getting metadata of directory inside directory: {}",
+                            e
+                        );
                         continue;
                     }
                 };
@@ -167,8 +179,14 @@ pub fn logs_size() {
 
     if dir_size > 10_000_000 {
         info!("Logs size: {} octets or {} bits", dir_size, dir_size * 8);
-        warn!("{}","The logs size is bigger than 10 megabytes!".yellow());
-        warn!("{}{}{}","This is really big for logs so be careful and remember you can delete logs with ".yellow(), "--clearLogs".green().bold(),"!".yellow());
+        warn!("{}", "The logs size is bigger than 10 megabytes!".yellow());
+        warn!(
+            "{}{}{}",
+            "This is really big for logs so be careful and remember you can delete logs with "
+                .yellow(),
+            "--clearLogs".green().bold(),
+            "!".yellow()
+        );
     } else {
         info!("Logs size: {} octets or {} bits", dir_size, dir_size * 8);
     }

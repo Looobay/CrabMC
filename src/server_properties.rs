@@ -1,10 +1,10 @@
-use std::{fs, io};
-use std::fs::{File, OpenOptions};
-use std::io::{BufRead, Write};
-use std::path::Path;
-use chrono::{DateTime, Utc};
-use log::{info, error};
 use crate::{MC_GAME_VERSION, MC_PROTOCOL_VERSION};
+use chrono::{DateTime, Utc};
+use log::{error, info};
+use std::fs::OpenOptions;
+use std::io::Write;
+use std::path::Path;
+use std::{fs, io};
 
 const SERVER_PROPERTIES_FILENAME: &str = "server.properties";
 
@@ -13,15 +13,16 @@ pub fn server_properties_init() -> io::Result<()> {
 
     // Ouvre le fichier avec OpenOptions
     let mut file = OpenOptions::new()
-        .write(true)       // Permet l'écriture dans le fichier
-        .create(true)      // Crée le fichier s'il n'existe pas
-        .truncate(true)    // Tronque le fichier s'il existe déjà
+        .write(true) // Permet l'écriture dans le fichier
+        .create(true) // Crée le fichier s'il n'existe pas
+        .truncate(true) // Tronque le fichier s'il existe déjà
         .open(filename)?;
 
     let now: DateTime<Utc> = Utc::now();
     let time = now.format("%a %b %d %H:%M:%S GMT %Y").to_string();
 
-    let content = format!(r#"#Minecraft server properties (for {} with protocol version {})
+    let content = format!(
+        r#"#Minecraft server properties (for {} with protocol version {})
 # {}
 allow-flight=false
 allow-nether=true
@@ -80,7 +81,9 @@ text-filtering-config=
 use-native-transport=true
 view-distance=10
 white-list=false
-"#, MC_GAME_VERSION, MC_PROTOCOL_VERSION, time, "");
+"#,
+        MC_GAME_VERSION, MC_PROTOCOL_VERSION, time, ""
+    );
 
     // Écrire le contenu dans le fichier
     if let Err(e) = file.write_all(content.as_bytes()) {
