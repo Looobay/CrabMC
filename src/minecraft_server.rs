@@ -1,6 +1,3 @@
-use log::{error, info};
-use crate::util::crypt::generate_key_pair;
-
 pub struct IP{
     ip: String,
 }
@@ -16,7 +13,7 @@ impl IP{
         &self.ip
     }
 }
-
+/* Issue with RSA
 pub fn initialize_key_pair(){
     info!("Generating keypair");
 
@@ -27,3 +24,4 @@ pub fn initialize_key_pair(){
         }
     }
 }
+*/

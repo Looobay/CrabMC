@@ -1,7 +1,11 @@
 [package]
 name = "CrabMC"
+license = "MIT"
 version = "0.1.0"
 edition = "2021"
+authors = ["Looobay"]
+description = "CrabMC ~ A rusty minecraft server"
+repository = "https://github.com/Looobay/CrabMC"
 
 [profile.release]
 opt-level = "z" # z = max opti
@@ -12,7 +16,6 @@ chrono = "0.4.38" # Time
 clap = "4.5.16" # Command Line
 log ="0.4.1" # Logs
 rand = "0.8.5" # Random
-rsa = "0.9.6" # RS encrypt
 tiny_http = "0.12.0" # HTTP
 colored = "2.1.0" # Colored logs
 fern = "0.6.2" # Save logs
