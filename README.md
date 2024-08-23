@@ -1,5 +1,7 @@
 # CrabMC
 
+Also guys if you see something wrong in the code about the Minecraft EULA please tell me.
+
 ## Why does this project exist?
 
 * Because I like Rust.
