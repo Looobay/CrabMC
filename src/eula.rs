@@ -295,7 +295,7 @@ City of Sao Pãulo, State of Sao Pãulo, 04578-000, Brazil
                 .write(true)
                 .create(true)
                 .truncate(true)
-                .open(EULA_FILENAME)?;
+                .open(EULA_FILENAME);
 
             file.unwrap().write_all(content.as_bytes()).unwrap();
 
