@@ -1,16 +1,15 @@
-use std::error::Error;
-use std::sync::Arc;
-use std::thread;
-use log::{error, info, warn};
-use tiny_http::*;
-use crate::{MC_GAME_VERSION, MC_PROTOCOL_VERSION};
 use crate::minecraft_server::IP;
 use crate::network::server_connection_listener::start_tcp_server_listener;
+use crate::{MC_GAME_VERSION, MC_PROTOCOL_VERSION};
+use log::info;
 
 pub fn init_dedicated_server(port: &str) {
     let mut ip = IP::new("0.0.0.0");
 
-    info!("Starting Minecraft server version {} and protocol version {}", MC_GAME_VERSION, MC_PROTOCOL_VERSION);
+    info!(
+        "Starting Minecraft server version {} and protocol version {}",
+        MC_GAME_VERSION, MC_PROTOCOL_VERSION
+    );
 
     info!("Loading properties");
     // TODO => Load properties from minecraft_server.rs
