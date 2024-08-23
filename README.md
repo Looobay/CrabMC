@@ -32,6 +32,7 @@ Clone the repo and enter `cargo build --release` aaand it's done!
 ### On Mac OS:
 Install rustup and cargo on your mac os computer (Sadly I can't compile from windows to mac os so I use a macbook air).
 Clone the repo and enter `cargo build --release` aaand it's done!
+I recommand you to run the output file with `sudo ./CrabMC` it will work better than in normal mode.
 
 ### On Linux:
 I didn't try for Linux so it should be the same steps than Win32 and Mac OS...
