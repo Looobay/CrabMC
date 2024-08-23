@@ -37,6 +37,11 @@ Clone the repo and enter `cargo build --release` aaand it's done!
 I didn't try for Linux so it should be the same steps than Win32 and Mac OS...
 Tell me if you try this!
 
+## Can I contribute to the project?
+Yes of course! You can contribute to the project if you think your code is useful, don't be shy.
+
+But remember that this project is really small, so its governance is BDFN (Benevolent Dictator For Now), which means that I (Looobay) have the last word on everything, but I'm a beginner in Rust so if you explain your code to me, I'll probably accept your contribution
+
 ## Licenses
 
 This project is under MIT license, you can read this in [LICENSE](LICENSE) file or at https://opensource.org/license/MIT.
