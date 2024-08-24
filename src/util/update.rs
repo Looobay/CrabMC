@@ -1,20 +1,27 @@
-//===============================================
-// This is a test for a rolling release system...
-//===============================================
-fn update() -> Result<(), Box<dyn ::std::error::Error>> {
+use std::env;
+use std::error::Error;
+use log::info;
+
+//================
+// Just tryin smth
+//================
+pub fn update_program() -> Result<(), Box<dyn Error>> {
+    let target = format!("{}-{}", env::consts::ARCH, env::consts::OS);
+
     let status = self_update::backends::github::Update::configure()
         .repo_owner("Looobay")
         .repo_name("CrabMC")
         .bin_name("CrabMC")
+        .target(&target)
         .show_download_progress(true)
         .current_version(self_update::cargo_crate_version!())
         .build()?
         .update()?;
 
     if status.updated() {
-        println!("The program has been updated to version {}", status.version());
+        info!("The program has been updated to version {}", status.version());
     } else {
-        println!("The program is already up-to-date.");
+        info!("The program is already up-to-date.");
     }
 
     Ok(())

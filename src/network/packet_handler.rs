@@ -157,7 +157,7 @@ fn handle_handshake(data: &Vec<u8>, state: &mut u8) {
         next_state
     );
 
-    if read_var_int(&protocol_version).unwrap() != MC_PROTOCOL_VERSION.parse().unwrap() {
+    if read_var_int(&protocol_version).unwrap() != MC_PROTOCOL_VERSION {
         if read_var_int(&protocol_version).unwrap() < 754 {
             warn!("multiplayer.disconnect.outdated_client");
         } else {
