@@ -30,8 +30,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: <tofill>
-        release_name: <tofill>
+        tag_name: auto-release-$(date +'%Y%m%d')-${{ github.run_number }}
+        release_name: Auto Release $(date +'%Y%m%d') ${{ github.run_number }}
         draft: true
         prerelease: false
 
