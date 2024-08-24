@@ -59,7 +59,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [ build-linux, build-macos, build-windows ]
+    needs: [build-linux, build-macos, build-windows]
     permissions:
       contents: write
       id-token: write
@@ -67,15 +67,15 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
       - name: Create Draft Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: auto-release-${{ env.date }}.${{ github.run_number }}
-          release_name: Auto Release ${{ env.date }}.${{ github.run_number }}
+          tag_name: auto-release-${{ env.DATE }}.${{ github.run_number }}
+          release_name: Auto Release ${{ env.DATE }}.${{ github.run_number }}
           draft: false
           prerelease: false
       - name: Download Linux Binaries from Build Job
