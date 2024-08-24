@@ -71,8 +71,6 @@ pub fn has_agreed_to_eula() -> io::Result<()> {
 
 #[cfg(target_os = "macos")]
 pub fn has_agreed_to_eula() -> io::Result<()> {
-    use std::fmt::format;
-
     let eula_path = Path::new(EULA_FILENAME);
 
     let file = match File::open(eula_path) {
@@ -298,7 +296,6 @@ City of Sao Pãulo, State of Sao Pãulo, 04578-000, Brazil
                 .open(EULA_FILENAME);
 
             file.unwrap().write_all(content.as_bytes()).unwrap();
-
         }
         "n" => {
             warn!("You need to agree the EULA to use this software.");
