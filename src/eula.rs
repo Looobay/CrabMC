@@ -372,6 +372,18 @@ fn info_box_eula() {
     }
 }
 
+#[cfg(target_os = "linux")]
+fn info_box_eula() {
+    if let Err(e) = native_dialog::MessageDialog::new()
+        .set_type(MessageType::Warning)
+        .set_title("CrabMC")
+        .set_text("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.")
+        .show_alert()
+    {
+        error!("Failed to show EULA info dialog: {}", e);
+    }
+}
+
 #[cfg(target_os = "macos")]
 fn macos_info_box_eula() {
     if let Err(e) = native_dialog::MessageDialog::new()
