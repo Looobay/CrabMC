@@ -1,6 +1,6 @@
 # CrabMC
 
-Also guys if you see something wrong in the code about the Minecraft EULA please tell me.
+### Also guys if you see something wrong in the code about the Minecraft EULA please tell me.
 
 ## Why does this project exist?
 
@@ -39,6 +39,8 @@ I recommend you to run the output file with `sudo ./CrabMC` it will work better 
 
 ### On Linux:
 I didn't try for Linux so it should be the same steps as Win32 and macOS...
+
+The Github action compiler succeed compiling the software on Ubuntu so it is probably ok...
 
 Tell me if you try this!
 

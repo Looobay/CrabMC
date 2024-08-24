@@ -39,7 +39,6 @@ fn main() {
             .underline()
     );
     logs_size();
-
     server_setup();
 }
 
