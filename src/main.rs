@@ -15,7 +15,6 @@ use eula::*;
 use log::*;
 use server_properties::*;
 use std::thread;
-use crate::util::update::update_program;
 
 const MC_GAME_VERSION: &str = "1.20.2";
 const MC_PROTOCOL_VERSION: i32 = 764;
@@ -39,11 +38,6 @@ fn main() {
             .underline()
     );
     logs_size();
-
-    // This will be added in the next release
-    /*if let Err(e) = update_program() {
-        eprintln!("Failed to update: {}", e);
-    }*/
 
     server_setup();
 }
