@@ -4,7 +4,7 @@ use crate::{MC_GAME_VERSION, MC_PROTOCOL_VERSION};
 use log::info;
 
 pub fn init_dedicated_server(port: &str) {
-    let mut ip = IP::new("0.0.0.0");
+    let ip = IP::new("0.0.0.0");
 
     info!(
         "Starting Minecraft server version {} and protocol version {}",
@@ -15,8 +15,6 @@ pub fn init_dedicated_server(port: &str) {
     // TODO => Load properties from minecraft_server.rs
 
     let address = format!("{}:{}", ip.get_local_ip(), port);
-
-    // Correctly handle the Result type
     start_tcp_server_listener(address);
 
     // TODO => Add the authentication

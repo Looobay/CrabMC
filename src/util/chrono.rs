@@ -1,7 +1,8 @@
 use std::thread;
 use std::time::{Duration, Instant};
 
-pub fn run_with_timeout<F>(timeout: Duration, process: F)
+// removethe "_" when we will use this function in future.
+pub fn _run_with_timeout<F>(timeout: Duration, process: F)
 where
     F: FnOnce() + Send + 'static,
 {

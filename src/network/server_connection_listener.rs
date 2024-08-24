@@ -32,13 +32,12 @@ pub fn start_tcp_server_listener(address: String) {
 }
 
 fn handle_client(mut stream: TcpStream) {
-    let mut data: Vec<u8> = vec![];
     let mut state: u8 = 0;
     let mut buffer = vec![0; 1000];
     loop {
         match stream.read(&mut buffer) {
             Ok(bytes_read) => {
-                data = buffer[..bytes_read].to_vec();
+                let data = buffer[..bytes_read].to_vec();
                 packet_listener(data, &mut state, &mut stream);
             }
             Err(e) => {

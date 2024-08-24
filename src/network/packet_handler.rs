@@ -1,19 +1,20 @@
-use std::io::Write;
-use std::net::TcpStream;
-use log::{info, warn};
 use crate::math::var_int_and_long::{read_var_int, write_var_int};
 use crate::MC_PROTOCOL_VERSION;
+use log::{info, warn};
+use std::io::Write;
+use std::net::TcpStream;
 
+//================================================================================================================
+//                         This function handle ALL the packets from Minecraft Client.
+// To understand this file I recommand you to check this web site => https://wiki.vg (don't forget to set 1.20.2).
+//================================================================================================================
 pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
-    let mut uuid: Option<String> = None;
-    let mut player_name: Option<String> = None;
-
     match (*state, data[1]) {
         (0, 0) => {
             // Handshake
 
             handle_handshake(&data, state);
-        },
+        }
         (1, 0) => {
             // TODO => Add status (https://wiki.vg/Protocol)
         }
@@ -21,101 +22,118 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
             // Login start and we send login success without encryption
 
             let (uuid_str, player_name_str) = handle_login_start(&data, state);
-            uuid = Some(uuid_str);
-            player_name = Some(player_name_str);
+            let uuid = Some(uuid_str);
+            let player_name = Some(player_name_str);
 
-            let packet_login_success = send_login_success(&data, state, uuid.as_ref().unwrap(), player_name.as_ref().unwrap());
+            let packet_login_success = send_login_success(
+                &data,
+                state,
+                uuid.as_ref().unwrap(),
+                player_name.as_ref().unwrap(),
+            );
             stream.write_all(&packet_login_success).unwrap();
-        },
+        }
         (2, 3) => {
             // Login acknowledged
 
             handle_login_acknowledged(&data, state);
-        },
+        }
         // https://wiki.vg/index.php?title=Protocol&oldid=18641#Serverbound_5
-        (3, 0) => { // Confirm Teleportation
+        (3, 0) => {
+            // Confirm Teleportation
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 1) => { // Query Block Entity Tag ; Used when F3+I is pressed while looking at a block.
+        }
+        (3, 1) => {
+            // Query Block Entity Tag ; Used when F3+I is pressed while looking at a block.
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 2) => { // Change Difficulty ; ONLY OP CAN DO THIS ; 0: peaceful, 1: easy, 2: normal, 3: hard ; Appears to only be used on single-player
+        }
+        (3, 2) => {
+            // Change Difficulty ; ONLY OP CAN DO THIS ; 0: peaceful, 1: easy, 2: normal, 3: hard ; Appears to only be used on single-player
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 3) => { // Acknowledge Message
+        }
+        (3, 3) => {
+            // Acknowledge Message
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 4) => { // Chat Command
+        }
+        (3, 4) => {
+            // Chat Command
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 5) => { // Chat Message
+        }
+        (3, 5) => {
+            // Chat Message
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 6) => { // Player Session
+        }
+        (3, 6) => {
+            // Player Session
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 7) => { // Chunk Batch Received ; Notifies the server that the chunk batch has been received by the client.
-                    // The server us es the value sent in this packet to adjust the number of chunks to be sent in a batch.
+        }
+        (3, 7) => {
+            // Chunk Batch Received ; Notifies the server that the chunk batch has been received by the client.
+            // The server us es the value sent in this packet to adjust the number of chunks to be sent in a batch.
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 8) => { // Client Status
+        }
+        (3, 8) => {
+            // Client Status
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 9) => { // Client Information (play) ; Sent when the player connects, or when settings are changed ; Looks like the other Client Information
+        }
+        (3, 9) => {
+            // Client Information (play) ; Sent when the player connects, or when settings are changed ; Looks like the other Client Information
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 0x0A) => { // Command Suggestions Request ; Sent when the client needs to tab-complete a minecraft:ask_server suggestion type.
+        }
+        (3, 0x0A) => {
+            // Command Suggestions Request ; Sent when the client needs to tab-complete a minecraft:ask_server suggestion type.
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
-        (3, 0x0B) => { // Acknowledge Configuration ; Sent by the client upon receiving a Start Configuration packet from the server.
-                       // This packet switches the connection state to configuration.
+        }
+        (3, 0x0B) => {
+            // Acknowledge Configuration ; Sent by the client upon receiving a Start Configuration packet from the server.
+            // This packet switches the connection state to configuration.
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x0C) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x0D) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x0E) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x0F) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x10) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x11) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x12) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x13) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x14) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x15) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x16) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x17) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x18) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x19) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (3, 0x1A) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
-        },
+        }
         (4, 0) => {
             // Client info
             // TODO => Allow the server configuration to send other packets like texture packs (https://wiki.vg/index.php?title=Protocol&oldid=18641#Configuration)
@@ -130,11 +148,9 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
             info!("Finish config packet sent!");
 
             handle_finish_configuration(&data, state);
-        },
+        }
         (4, 2) => {
             // Finish Configuration (from client)
-
-
         }
         _ => {}
     }
@@ -145,7 +161,7 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
 // ==============================================================
 fn handle_handshake(data: &Vec<u8>, state: &mut u8) {
     let total_length = data[0] as usize;
-    let protocol_version = vec![data[2],data[3]];
+    let protocol_version = vec![data[2], data[3]];
 
     let next_state = read_var_int(&[data[total_length]]).unwrap();
 
@@ -165,7 +181,7 @@ fn handle_handshake(data: &Vec<u8>, state: &mut u8) {
         }
     }
 
-    if next_state == 2{
+    if next_state == 2 {
         *state = 2;
         info!("State = 2 (Login)");
     }
@@ -198,13 +214,14 @@ fn handle_login_start(data: &Vec<u8>, _state: &mut u8) -> (String, String) {
 // =================================
 // Send the "Login Success" package.
 // =================================
-fn send_login_success(_data: &Vec<u8>, _state: &mut u8, uuid: &String, pn: &String) -> Vec<u8>{
+fn send_login_success(_data: &Vec<u8>, _state: &mut u8, uuid: &String, pn: &String) -> Vec<u8> {
     let id = 0x02; // Packet ID (login success)
 
     // Transform UUID => Bytes
     let uuid_bytes = uuid.replace('-', "");
-    let uuid_bytes = (0..32).step_by(2)
-        .map(|i| u8::from_str_radix(&uuid_bytes[i..i+2], 16).unwrap())
+    let uuid_bytes = (0..32)
+        .step_by(2)
+        .map(|i| u8::from_str_radix(&uuid_bytes[i..i + 2], 16).unwrap())
         .collect::<Vec<u8>>();
 
     // Construct the player name in a VarInt
@@ -216,7 +233,7 @@ fn send_login_success(_data: &Vec<u8>, _state: &mut u8, uuid: &String, pn: &Stri
 
     // Properties
     data.extend_from_slice(&write_var_int(0)); // No properties
-    // TODO => Setting properties for future...
+                                               // TODO => Setting properties for future...
 
     // Calculate the length of the packet
     let length = write_var_int(data.len() as i32).len() + data.len(); // length + ID + data
@@ -234,9 +251,11 @@ fn send_login_success(_data: &Vec<u8>, _state: &mut u8, uuid: &String, pn: &Stri
 // =========================================================================
 // Handle the "Login Acknowledged" packet and change state to Configuration.
 // =========================================================================
-fn handle_login_acknowledged(data: &Vec<u8>, state: &mut u8){
-    info!("Packet type: Login acknowledged\nID: {:?}",
-        read_var_int(&[data[1]]).unwrap());
+fn handle_login_acknowledged(data: &Vec<u8>, state: &mut u8) {
+    info!(
+        "Packet type: Login acknowledged\nID: {:?}",
+        read_var_int(&[data[1]]).unwrap()
+    );
 
     *state = 4; // We set the state to configuration...
     info!("State = 4 (Configuration)")
@@ -245,7 +264,8 @@ fn handle_login_acknowledged(data: &Vec<u8>, state: &mut u8){
 // ========================================
 // Handle the "Client information" package.
 // ========================================
-fn handle_client_info(data: &Vec<u8>, _state: &mut u8) { // TODO => The info in this can change some process in the server
+fn handle_client_info(data: &Vec<u8>, _state: &mut u8) {
+    // TODO => The info in this can change some process in the server
     let client_lang_length = data[2] as usize;
     let client_lang = &data[3..2 + client_lang_length];
     let view_distance = data[2 + client_lang_length + 1];
@@ -270,10 +290,11 @@ fn handle_client_info(data: &Vec<u8>, _state: &mut u8) { // TODO => The info in 
 // ==============================================================
 // Handle "Finish Configuration" packet and change state to Play.
 // ==============================================================
-fn handle_finish_configuration(data: &Vec<u8>, state: &mut u8){
-
-    info!("Packet type: Finish Configuration\nID: {}",
-        read_var_int(&[data[1]]).unwrap());
+fn handle_finish_configuration(data: &Vec<u8>, state: &mut u8) {
+    info!(
+        "Packet type: Finish Configuration\nID: {}",
+        read_var_int(&[data[1]]).unwrap()
+    );
 
     *state = 3;
     info!("State = 3 (Play)");
