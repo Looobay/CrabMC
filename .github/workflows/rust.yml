@@ -18,8 +18,7 @@ jobs:
       - name: Archive Binaries
         run: |
           mkdir -p artifacts
-          cp target/release/your-binary-name artifacts/your-binary-name-linux
-          # Replace `your-binary-name` with your actual binary name
+          cp target/release/CrabMC artifacts/CrabMC-linux
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v3
         id: upload-artifact
@@ -39,8 +38,7 @@ jobs:
       - name: Archive Binaries
         run: |
           mkdir -p artifacts
-          cp target/release/your-binary-name artifacts/your-binary-name-macos
-          # Replace `your-binary-name` with your actual binary name
+          cp target/release/CrabMC artifacts/CrabMC-mac
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v3
         id: upload-artifact
