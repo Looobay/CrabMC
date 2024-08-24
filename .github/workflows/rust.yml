@@ -9,8 +9,6 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
-    outputs:
-      binary-path: ${{ steps.upload-artifact.outputs.artifact-path }}
     steps:
       - uses: actions/checkout@v4
       - name: Build
@@ -21,7 +19,6 @@ jobs:
           cp target/release/CrabMC artifacts/CrabMC-linux
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v3
-        id: upload-artifact
         with:
           name: linux-binaries
           path: artifacts/
@@ -29,8 +26,6 @@ jobs:
   build-macos:
     runs-on: macos-latest
     needs: build-linux
-    outputs:
-      binary-path: ${{ steps.upload-artifact.outputs.artifact-path }}
     steps:
       - uses: actions/checkout@v4
       - name: Build
@@ -38,10 +33,9 @@ jobs:
       - name: Archive Binaries
         run: |
           mkdir -p artifacts
-          cp target/release/CrabMC artifacts/CrabMC-mac
+          cp target/release/CrabMC artifacts/CrabMC-macos
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v3
-        id: upload-artifact
         with:
           name: macos-binaries
           path: artifacts/
@@ -49,8 +43,6 @@ jobs:
   build-windows:
     runs-on: windows-latest
     needs: build-linux
-    outputs:
-      binary-path: ${{ steps.upload-artifact.outputs.artifact-path }}
     steps:
       - uses: actions/checkout@v4
       - name: Build
@@ -61,7 +53,6 @@ jobs:
           cp target/release/CrabMC.exe artifacts/CrabMC.exe
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v3
-        id: upload-artifact
         with:
           name: windows-binaries
           path: artifacts/
@@ -110,8 +101,8 @@ jobs:
         uses: actions/upload-release-asset@v1.0.1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/CrabMC-mac
-          asset_name: CrabMC-mac
+          asset_path: ./artifacts/CrabMC-macos
+          asset_name: CrabMC-macos
           asset_content_type: application/octet-stream
       - name: Upload Windows Binary to Release
         uses: actions/upload-release-asset@v1.0.1
