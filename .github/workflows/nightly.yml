@@ -53,7 +53,6 @@ jobs:
         run: |
           mkdir -p artifacts
           cp target/release/CrabMC.exe artifacts/CrabMC.exe
-          tar -czf artifacts/CrabMC.exe-C artifacts CrabMC.exe
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v3
         with:
