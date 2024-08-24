@@ -26,29 +26,31 @@ Also guys if you see something wrong in the code about the Minecraft EULA please
 ## How to compile the project ?
 
 ### On Win32:
-Install rustup and cargo on your windows computer.
+Install rustup and cargo on your Windows computer.
 
-Clone the repo and enter `cargo build --release` aaand it's done!
+Clone the repo and enter `cargo build --release` and it's done!
 
 ### On Mac OS:
-Install rustup and cargo on your mac os computer (Sadly I can't compile from windows to mac os so I use a macbook air).
+Install rustup and cargo on your macOS computer (Sadly I can't compile from windows to macOS so I use a macbook air).
 
-Clone the repo and enter `cargo build --release` aaand it's done!
+Clone the repo and enter `cargo build --release` and it's done!
 
-I recommand you to run the output file with `sudo ./CrabMC` it will work better than in normal mode.
+I recommend you to run the output file with `sudo ./CrabMC` it will work better than in normal mode.
 
 ### On Linux:
-I didn't try for Linux so it should be the same steps than Win32 and Mac OS...
+I didn't try for Linux so it should be the same steps as Win32 and macOS...
 
 Tell me if you try this!
 
 ## Can I contribute to the project?
 Yes of course! You can contribute to the project if you think your code is useful, don't be shy.
 
-But remember that this project is really small, so its governance is BDFN (Benevolent Dictator For Now), which means that I (Looobay) have the last word on everything, but I'm a beginner in Rust so if you explain your code to me, I'll probably accept your contribution
+But remember that this project is tiny, so its governance is BDFN (Benevolent Dictator For Now), which means that I (Looobay) have the last word on everything, but I'm a beginner in Rust so if you explain your code to me, I'll probably accept your contribution
+
+If you do not agree with that system you can fork the project.
 
 ## Licenses
 
 This project is under MIT license, you can read this in [LICENSE](LICENSE) file or at https://opensource.org/license/MIT.
 
-You can see all the licenses of every dependencies at [licenses.tsv](licenses.tsv).
+You can see all the licenses of every dependency at [licenses.tsv](licenses.tsv).
