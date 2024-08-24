@@ -12,6 +12,7 @@ use crate::util::logger::{deleting_logs, logs_size, setup_logging};
 use clap::{Arg, Command};
 use colored::Colorize;
 use eula::*;
+use crate::eula::has_agreed_to_eula;
 use log::*;
 use server_properties::*;
 use std::thread;

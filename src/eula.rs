@@ -26,6 +26,49 @@ pub fn eula_init() -> io::Result<()> {
     Ok(has_agreed_to_eula()?)
 }
 
+#[cfg(target_os = "linux")]
+pub fn has_agreed_to_eula() -> io::Result<()> {
+    let eula_path = Path::new(EULA_FILENAME);
+
+    let file = match File::open(eula_path) {
+        Ok(file) => file,
+        Err(_) => {
+            eula_init()?;
+            return Ok(());
+        }
+    };
+
+    let reader = io::BufReader::new(file);
+    let mut eula_value = None;
+
+    for line in reader.lines() {
+        let line = line?;
+        if line.starts_with("eula=") {
+            eula_value = Some(line[5..].trim().to_string());
+            break;
+        }
+    }
+
+    match eula_value.as_deref() {
+        Some("true") => {
+            info!("EULA agreed");
+            Ok(())
+        }
+        Some("false") => {
+            warn!("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.");
+            info_box_eula();
+            std::process::exit(0);
+        }
+        _ => {
+            warn!("EULA value not found!");
+            Err(io::Error::new(
+                io::ErrorKind::NotFound,
+                "EULA value not found",
+            ))
+        }
+    }
+}
+
 #[cfg(target_os = "windows")]
 pub fn has_agreed_to_eula() -> io::Result<()> {
     let eula_path = Path::new(EULA_FILENAME);
