@@ -52,13 +52,13 @@ jobs:
       - name: Archive Binaries
         run: |
           mkdir -p artifacts
-          cp target/release/CrabMC.exe artifacts/CrabMC-windows
-          tar -czf artifacts/CrabMC-windows.tar.gz -C artifacts CrabMC-windows
+          cp target/release/CrabMC.exe artifacts/CrabMC.exe
+          tar -czf artifacts/CrabMC.exe-C artifacts CrabMC.exe
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: windows-binaries
-          path: artifacts/CrabMC-windows.tar.gz
+          path: artifacts/CrabMC.exe
 
   release:
     runs-on: ubuntu-latest
@@ -141,8 +141,8 @@ jobs:
         uses: actions/upload-release-asset@v1.0.1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./windows-binaries/CrabMC-windows.tar.gz
-          asset_name: CrabMC-windows.tar.gz
+          asset_path: ./windows-binaries/CrabMC.exe
+          asset_name: CrabMC.exe
           asset_content_type: application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -23,6 +23,10 @@
 * 🔴: Generate the world.
 * 🔴: And the others things... (yes it's a big project)
 
+## How to install the software ?
+
+### You can install the software by checking in the [releases](https://github.com/Looobay/CrabMC/releases) page, here you can download a nightly release (latest build) or a release ("safest" build).
+
 ## How to compile the project ?
 
 ### On Win32:
