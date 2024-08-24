@@ -79,6 +79,19 @@ jobs:
         with:
           tag_name: nightly-${{ env.DATE }}
           release_name: Nightly ${{ env.DATE }}
+          body: |
+            This is the nightly release of CrabMC from the night of ${{ env.DATE }}.
+            Enjoy the latest features!
+            
+            THE SOFTWARE IS NOT READY FOR PRODUCTION USE!
+            THIS SOFTWARE IS EXPERIMENTAL!
+            THIS SOFTWARE IS PROVIDED "AS IS"!
+            THIS SOFTWARE IS WRITTEN BY A RUST NEWBIE!
+            But if you want, you can check the source code to make up your own mind about whether it is safe to run on your machine.
+            
+            Linux and macOS tip: You need to run the file in `sudo` mode because it can't write files like eula.txt and logs otherwise.
+            
+            Important macOS tip: If your system tells you that the file can't be executed because it can't check if it is a virus or not, you need to go to your security settings and allow the program to run. After that it will say that it is dangerous to run the program, but run it and you will see.
           draft: false
           prerelease: false
 
