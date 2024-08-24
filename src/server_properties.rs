@@ -13,9 +13,9 @@ pub fn server_properties_init() -> io::Result<()> {
 
     // Ouvre le fichier avec OpenOptions
     let mut file = OpenOptions::new()
-        .write(true) // Permet l'écriture dans le fichier
-        .create(true) // Crée le fichier s'il n'existe pas
-        .truncate(true) // Tronque le fichier s'il existe déjà
+        .write(true)
+        .create(true)
+        .truncate(true)
         .open(filename)?;
 
     let now: DateTime<Utc> = Utc::now();

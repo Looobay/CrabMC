@@ -26,50 +26,7 @@ pub fn eula_init() -> io::Result<()> {
     Ok(has_agreed_to_eula()?)
 }
 
-#[cfg(target_os = "linux")]
-pub fn has_agreed_to_eula() -> io::Result<()> {
-    let eula_path = Path::new(EULA_FILENAME);
-
-    let file = match File::open(eula_path) {
-        Ok(file) => file,
-        Err(_) => {
-            eula_init()?;
-            return Ok(());
-        }
-    };
-
-    let reader = io::BufReader::new(file);
-    let mut eula_value = None;
-
-    for line in reader.lines() {
-        let line = line?;
-        if line.starts_with("eula=") {
-            eula_value = Some(line[5..].trim().to_string());
-            break;
-        }
-    }
-
-    match eula_value.as_deref() {
-        Some("true") => {
-            info!("EULA agreed");
-            Ok(())
-        }
-        Some("false") => {
-            warn!("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.");
-            info_box_eula();
-            std::process::exit(0);
-        }
-        _ => {
-            warn!("EULA value not found!");
-            Err(io::Error::new(
-                io::ErrorKind::NotFound,
-                "EULA value not found",
-            ))
-        }
-    }
-}
-
-#[cfg(target_os = "windows")]
+#[cfg(any(target_os = "windows", target_os = "linux"))]
 pub fn has_agreed_to_eula() -> io::Result<()> {
     let eula_path = Path::new(EULA_FILENAME);
 
@@ -142,7 +99,7 @@ pub fn has_agreed_to_eula() -> io::Result<()> {
         }
         Some("false") => {
             warn!("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.");
-            macos_info_box_eula();
+            info_box_eula();
             macos_print_eula();
             Ok(())
         }
@@ -360,36 +317,11 @@ pub fn delete_eula() {
     }
 }
 
-#[cfg(target_os = "windows")]
 fn info_box_eula() {
     if let Err(e) = native_dialog::MessageDialog::new()
         .set_type(MessageType::Warning)
         .set_title("CrabMC")
         .set_text("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.")
-        .show_alert()
-    {
-        error!("Failed to show EULA info dialog: {}", e);
-    }
-}
-
-#[cfg(target_os = "linux")]
-fn info_box_eula() {
-    if let Err(e) = native_dialog::MessageDialog::new()
-        .set_type(MessageType::Warning)
-        .set_title("CrabMC")
-        .set_text("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.")
-        .show_alert()
-    {
-        error!("Failed to show EULA info dialog: {}", e);
-    }
-}
-
-#[cfg(target_os = "macos")]
-fn macos_info_box_eula() {
-    if let Err(e) = native_dialog::MessageDialog::new()
-        .set_type(MessageType::Warning)
-        .set_title("CrabMC")
-        .set_text("You need to agree to the EULA in order to run the server. Accept the EULA on the command line after clicking OK or go to 'eula.txt'.")
         .show_alert()
     {
         error!("Failed to show EULA info dialog: {}", e);
