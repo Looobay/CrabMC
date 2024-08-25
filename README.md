@@ -59,6 +59,6 @@ If you do not agree with that system you can fork the project.
 
 ## Licenses
 
-This project is under MIT license, you can read this in [LICENSE](LICENSE) file or at https://opensource.org/license/MIT.
+This project is under the Mozilla Public License 2.0, you can read this in [LICENSE](LICENSE) file or at https://www.mozilla.org/en-US/MPL/2.0/.
 
 You can see all the licenses of every dependency at [licenses.tsv](licenses.tsv).
