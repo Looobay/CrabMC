@@ -1,7 +1,7 @@
 use crate::math::var_int_and_long::{read_var_int, write_var_int};
 use crate::MC_PROTOCOL_VERSION;
 use log::{info, warn};
-use std::io::Write;
+use std::io::{Read, Write};
 use std::net::TcpStream;
 
 //================================================================================================================
@@ -26,19 +26,18 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
             let uuid = Some(uuid_str);
             let player_name = Some(player_name_str);
 
-            let packet_login_success = send_login_success(
-                &data,
-                state,
+            send_login_success(
+                stream,
                 uuid.as_ref().unwrap(),
                 player_name.as_ref().unwrap(),
             );
-            stream.write_all(&packet_login_success).unwrap();
         }
         (2, 0x03) => {
             // Login acknowledged
 
             handle_login_acknowledged(&data, state);
         }
+        // 3 = Play
         // https://wiki.vg/index.php?title=Protocol&oldid=18641#Serverbound_5
         (3, 0x00) => {
             // Confirm Teleportation
@@ -90,70 +89,25 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
             // This packet switches the connection state to configuration.
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 0x0C) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x0D) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x0E) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x0F) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x10) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x11) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x12) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x13) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x14) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x15) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x16) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x17) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x18) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x19) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
-        (3, 0x1A) => {
-            info!("Play / {}\nbuffer:{:?}", data[1], data);
-        }
+        // 4 = configuration
         (4, 0x00) => {
             // Client info
             // TODO => Allow the server configuration to send other packets like texture packs (https://wiki.vg/index.php?title=Protocol&oldid=18641#Configuration)
 
             handle_client_info(&data, state); // Read the client information packet
-
-            // ======================================================================================
-            // Sent by the server to notify the client that the configuration process has finished.
-            // The client answers with its own Finish Configuration whenever it is ready to continue.
-            // ======================================================================================
-            let packet_finish_config = send_packet(0x01, 0x02, None);
-            stream.write_all(&packet_finish_config).unwrap();
-            info!("Finish config packet sent!");
-
-            handle_finish_configuration(&data, state);
         }
         (4, 0x02) => {
             // Serverbound Plugin Message (https://wiki.vg/Protocol#Serverbound_Plugin_Message_.28configuration.29)
-            info!("Serverbound Plugin Message");
+            info!("Serverbound Plugin Message buffer: {:?}", data);
+        }
+        (4, 0x03) => {
+            // Acknowledge Finish Configuration
+            info!("Handle acknowledge_finish_configuration");
+            handle_acknowledge_finish_configuration(&data, state);
+        }
+        (4, 0x07) => {
+            // Serverbound Known Packs (https://wiki.vg/Protocol#Serverbound_Known_Packs)
+            info!("Serverbound Known Packs: {:?}", data);
         }
         _ => {}
     }
@@ -198,26 +152,26 @@ fn handle_login_start(data: &Vec<u8>, _state: &mut u8) -> (String, String) {
     let player_name = &data[3..3 + player_name_length];
     let uuid = &data[3 + player_name_length..3 + player_name_length + 16];
 
-    let uuid_str = uuid // UUID to string
+    let uuid_str = uuid
         .iter()
         .map(|b| format!("{:02x}", b))
         .collect::<Vec<String>>()
         .join("");
 
-    let player_name_str = String::from_utf8(player_name.to_vec()).unwrap(); // Conversion des octets en UTF-8
+    let player_name_str = String::from_utf8(player_name.to_vec()).unwrap();
 
     info!(
         "Packet type: Login start\nPlayer name: {:?}\nUUID: {:?}",
         player_name_str, uuid_str
     );
 
-    (uuid_str, player_name_str) // Retourne l'UUID et le nom du joueur
+    (uuid_str, player_name_str)
 }
 
 // =================================
 // Send the "Login Success" package.
 // =================================
-fn send_login_success(_data: &Vec<u8>, _state: &mut u8, uuid: &String, pn: &String) -> Vec<u8> {
+fn send_login_success(stream: &mut TcpStream, uuid: &String, pn: &String) {
     let id = 0x02; // Packet ID (login success)
 
     // Transform UUID => Bytes
@@ -239,16 +193,10 @@ fn send_login_success(_data: &Vec<u8>, _state: &mut u8, uuid: &String, pn: &Stri
     // TODO => Setting properties for future...
 
     // Calculate the length of the packet
-    let length = write_var_int(data.len() as i32).len() + data.len(); // length + ID + data
-
-    // Building the packet
-    let mut packet = Vec::new();
-    packet.extend_from_slice(&write_var_int(length as i32)); // Total packet length
-    packet.push(id as u8); // Packet's ID
-    packet.extend_from_slice(&data);
+    let length = (write_var_int(data.len() as i32).len() + data.len()) as u8; // length + ID + data
 
     info!("Login success packet sent");
-    packet
+    send_packet(stream, length, id, Some(data));
 }
 
 // =========================================================================
@@ -291,11 +239,11 @@ fn handle_client_info(data: &Vec<u8>, _state: &mut u8) {
 }
 
 // ==============================================================
-// Handle "Finish Configuration" packet and change state to Play.
+// Handle "Acknowledge Finish Configuration" packet and change state to Play.
 // ==============================================================
-fn handle_finish_configuration(data: &Vec<u8>, state: &mut u8) {
+fn handle_acknowledge_finish_configuration(data: &Vec<u8>, state: &mut u8) {
     info!(
-        "Packet type: Finish Configuration\nID: {}",
+        "Packet type: Acknowledge Finish Configuration\nID: {}",
         read_var_int(&[data[1]]).unwrap()
     );
 
@@ -303,10 +251,29 @@ fn handle_finish_configuration(data: &Vec<u8>, state: &mut u8) {
     info!("State = 3 (Play)");
 }
 
-// ===================================================================
-// Take length, ID and data and put them together in one clean packet.
-// ===================================================================
-fn send_packet(length: u8, id: u8, data: Option<Vec<u8>>) -> Vec<u8> {
+fn send_clientbound_known_packs(stream: &mut TcpStream) {
+    let id = 0x0E;
+
+    let mut data = Vec::new();
+    data.extend(write_var_int(0));
+    data.extend(vec![0u8, 0u8, 0u8]);
+
+    let length = (2 + data.len()) as u8;
+
+    send_packet(stream, length, id, Some(data));
+    info!("Clientbound known packs sent!");
+}
+
+fn send_finish_configuration(stream: &mut TcpStream) {
+    let id = 0x03;
+    let length: u8 = 2;
+    send_packet(stream, length, id, None);
+    info!("Finish configuration packet sent!")
+}
+// ====================================================================
+// Take length, ID and data then put them together in one clean packet.
+// ====================================================================
+fn send_packet(stream: &mut TcpStream, length: u8, id: u8, data: Option<Vec<u8>>) {
     // If data = None ; create an empty vector
     let data = data.unwrap_or_else(Vec::new);
 
@@ -314,5 +281,5 @@ fn send_packet(length: u8, id: u8, data: Option<Vec<u8>>) -> Vec<u8> {
     packet.push(length);
     packet.push(id);
     packet.extend_from_slice(&data);
-    packet
+    stream.write_all(&packet).unwrap();
 }
