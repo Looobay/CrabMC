@@ -5,20 +5,21 @@ use std::io::Write;
 use std::net::TcpStream;
 
 //================================================================================================================
-//                         This function handle ALL the packets from Minecraft Client.
+//                         This function handle EVERY packets from Minecraft Client.
 // To understand this file I recommand you to check this web site => https://wiki.vg (don't forget to set 1.20.2).
+//                 https://wiki.vg/Protocol_FAQ#What.27s_the_normal_login_sequence_for_a_client.3F
 //================================================================================================================
 pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
     match (*state, data[1]) {
-        (0, 0) => {
+        (0, 0x00) => {
             // Handshake
 
             handle_handshake(&data, state);
         }
-        (1, 0) => {
+        (1, 0x00) => {
             // TODO => Add status (https://wiki.vg/Protocol)
         }
-        (2, 0) => {
+        (2, 0x00) => {
             // Login start and we send login success without encryption
 
             let (uuid_str, player_name_str) = handle_login_start(&data, state);
@@ -33,50 +34,50 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
             );
             stream.write_all(&packet_login_success).unwrap();
         }
-        (2, 3) => {
+        (2, 0x03) => {
             // Login acknowledged
 
             handle_login_acknowledged(&data, state);
         }
         // https://wiki.vg/index.php?title=Protocol&oldid=18641#Serverbound_5
-        (3, 0) => {
+        (3, 0x00) => {
             // Confirm Teleportation
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 1) => {
+        (3, 0x01) => {
             // Query Block Entity Tag ; Used when F3+I is pressed while looking at a block.
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 2) => {
+        (3, 0x02) => {
             // Change Difficulty ; ONLY OP CAN DO THIS ; 0: peaceful, 1: easy, 2: normal, 3: hard ; Appears to only be used on single-player
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 3) => {
+        (3, 0x03) => {
             // Acknowledge Message
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 4) => {
+        (3, 0x04) => {
             // Chat Command
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 5) => {
+        (3, 0x05) => {
             // Chat Message
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 6) => {
+        (3, 0x06) => {
             // Player Session
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 7) => {
+        (3, 0x07) => {
             // Chunk Batch Received ; Notifies the server that the chunk batch has been received by the client.
             // The server us es the value sent in this packet to adjust the number of chunks to be sent in a batch.
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 8) => {
+        (3, 0x08) => {
             // Client Status
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (3, 9) => {
+        (3, 0x09) => {
             // Client Information (play) ; Sent when the player connects, or when settings are changed ; Looks like the other Client Information
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
@@ -134,23 +135,25 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
         (3, 0x1A) => {
             info!("Play / {}\nbuffer:{:?}", data[1], data);
         }
-        (4, 0) => {
+        (4, 0x00) => {
             // Client info
             // TODO => Allow the server configuration to send other packets like texture packs (https://wiki.vg/index.php?title=Protocol&oldid=18641#Configuration)
 
             handle_client_info(&data, state); // Read the client information packet
 
-            // ===========================================================================================================================================================================
-            // Sent by the server to notify the client that the configuration process has finished. The client answers with its own Finish Configuration whenever it is ready to continue.
-            // ===========================================================================================================================================================================
+            // ======================================================================================
+            // Sent by the server to notify the client that the configuration process has finished.
+            // The client answers with its own Finish Configuration whenever it is ready to continue.
+            // ======================================================================================
             let packet_finish_config = send_packet(0x01, 0x02, None);
             stream.write_all(&packet_finish_config).unwrap();
             info!("Finish config packet sent!");
 
             handle_finish_configuration(&data, state);
         }
-        (4, 2) => {
-            // Finish Configuration (from client)
+        (4, 0x02) => {
+            // Serverbound Plugin Message (https://wiki.vg/Protocol#Serverbound_Plugin_Message_.28configuration.29)
+            info!("Serverbound Plugin Message");
         }
         _ => {}
     }
@@ -232,8 +235,8 @@ fn send_login_success(_data: &Vec<u8>, _state: &mut u8, uuid: &String, pn: &Stri
     data.extend_from_slice(player_name_bytes);
 
     // Properties
-    data.extend_from_slice(&write_var_int(0)); // No properties
-                                               // TODO => Setting properties for future...
+    data.extend_from_slice(&write_var_int(0));
+    // TODO => Setting properties for future...
 
     // Calculate the length of the packet
     let length = write_var_int(data.len() as i32).len() + data.len(); // length + ID + data

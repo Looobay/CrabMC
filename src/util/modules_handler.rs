@@ -1,4 +1,4 @@
-use log::{error, info};
+use log::error;
 use std::fs;
 use std::path::Path;
 
