@@ -1,7 +1,7 @@
 use crate::math::var_int_and_long::{read_var_int, write_var_int};
 use crate::MC_PROTOCOL_VERSION;
 use log::{info, warn};
-use std::io::{Read, Write};
+use std::io::Write;
 use std::net::TcpStream;
 
 //================================================================================================================
@@ -14,7 +14,7 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
         (0, 0x00) => {
             // Handshake
 
-            handle_handshake(&data, state);
+            handle_handshake(&data, state, stream);
         }
         (1, 0x00) => {
             // TODO => Add status (https://wiki.vg/Protocol)
@@ -93,8 +93,9 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
         (4, 0x00) => {
             // Client info
             // TODO => Allow the server configuration to send other packets like texture packs (https://wiki.vg/index.php?title=Protocol&oldid=18641#Configuration)
-
+            info!("Client info");
             handle_client_info(&data, state); // Read the client information packet
+            send_clientbound_known_packs(stream);
         }
         (4, 0x02) => {
             // Serverbound Plugin Message (https://wiki.vg/Protocol#Serverbound_Plugin_Message_.28configuration.29)
@@ -116,7 +117,7 @@ pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
 // ==============================================================
 // Handle the "Handshake" package and switch to the target state.
 // ==============================================================
-fn handle_handshake(data: &Vec<u8>, state: &mut u8) {
+fn handle_handshake(data: &Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
     let total_length = data[0] as usize;
     let protocol_version = vec![data[2], data[3]];
 
@@ -255,21 +256,29 @@ fn send_clientbound_known_packs(stream: &mut TcpStream) {
     let id = 0x0E;
 
     let mut data = Vec::new();
-    data.extend(write_var_int(0));
-    data.extend(vec![0u8, 0u8, 0u8]);
+    data.extend(write_var_int(1)); // Known Pack count
+    let mut required_pack: Vec<u8> = Vec::new();
+    required_pack.extend(write_var_int("minecraft".len() as i32));
+    required_pack.extend(b"minecraft"); // ressource pack name
+    required_pack.extend(write_var_int("core".len() as i32));
+    required_pack.extend(b"core"); // ressource pack ID
+    required_pack.extend(write_var_int("1.21".len() as i32));
+    required_pack.extend(b"1.21"); // ressource pack version
+    data.extend(required_pack);
 
     let length = (2 + data.len()) as u8;
 
-    send_packet(stream, length, id, Some(data));
     info!("Clientbound known packs sent!");
+    send_packet(stream, length, id, Some(data));
 }
 
 fn send_finish_configuration(stream: &mut TcpStream) {
     let id = 0x03;
-    let length: u8 = 2;
-    send_packet(stream, length, id, None);
-    info!("Finish configuration packet sent!")
+
+    info!("Finish configuration packet sent!");
+    send_packet(stream, 2, id, None);
 }
+
 // ====================================================================
 // Take length, ID and data then put them together in one clean packet.
 // ====================================================================
