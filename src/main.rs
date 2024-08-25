@@ -1,4 +1,3 @@
-mod auth;
 mod dedicated;
 mod eula;
 mod math;
@@ -8,11 +7,11 @@ mod server_properties;
 mod util;
 
 use crate::dedicated::dedicated_server::init_dedicated_server;
+use crate::eula::delete_eula;
+use crate::eula::has_agreed_to_eula;
 use crate::util::logger::{deleting_logs, logs_size, setup_logging};
 use clap::{Arg, Command};
 use colored::Colorize;
-use eula::*;
-use crate::eula::has_agreed_to_eula;
 use log::*;
 use server_properties::*;
 use std::thread;
@@ -24,9 +23,9 @@ const NAME: &str = "CrabMC";
 const VERSION: &str = "1.0";
 const AUTHOR: &str = "Looobay";
 
-// ==================================
-// The starting point of the program.
-// ==================================
+// ======================================
+// The starting point of the whole server.
+// =======================================
 fn main() {
     match setup_logging() {
         Ok(_) => (),
@@ -38,6 +37,9 @@ fn main() {
             .bold()
             .underline()
     );
+
+    //setup_modules();
+
     logs_size();
     server_setup();
 }

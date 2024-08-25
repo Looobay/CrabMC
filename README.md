@@ -51,7 +51,7 @@ Tell me if you try this!
 ## Can I contribute to the project?
 Yes of course! You can contribute to the project if you think your code is useful, don't be shy.
 
-Just please one tip if you want to contribute: make sure you understand how the software work (I know it's a hell to understand) so if you don't understand just try to send me a message!
+Just please one tip if you want to contribute: make sure you understand how the software work by reading ["how it work ?"](doc/how_it_work.md) in the doc directory so if you don't understand just try to send me a message!
 
 But remember that this project is tiny, so its governance is BDFN (Benevolent Dictator For Now), which means that I (Looobay) have the last word on everything, but I'm a beginner in Rust so if you explain your code to me, I'll probably accept your contribution
 

@@ -12,6 +12,7 @@ use std::{fs, io};
 // ==========================================================
 pub fn setup_logging() -> Result<(), Box<dyn error::Error>> {
     let date = Local::now().format("%Y-%m-%d").to_string();
+    let dir = Path::new("logs");
 
     // Delete the latest log file if it exists
     if let Err(e) = fs::remove_file("logs/latest.log") {
@@ -20,9 +21,11 @@ pub fn setup_logging() -> Result<(), Box<dyn error::Error>> {
         }
     }
 
-    // Create the logs directory if it does not exist
-    if let Err(e) = fs::create_dir_all("logs") {
-        error!("Error when creating folder: {}", e);
+    if !dir.is_dir() {
+        // Create the logs directory if it does not exist
+        if let Err(e) = fs::create_dir_all("logs") {
+            error!("Error when creating folder: {}", e);
+        }
     }
 
     let log_file_name = "logs/latest.log";
