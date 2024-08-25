@@ -2,6 +2,8 @@
 
 ### Also guys if you see something wrong in the code about the Minecraft EULA please tell me.
 
+(this project is a little bit too hard for me so i'll be slow)
+
 ## Why does this project exist?
 
 * Because I like Rust.
