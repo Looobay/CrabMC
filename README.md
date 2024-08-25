@@ -2,6 +2,8 @@
 
 ### Also guys if you see something wrong in the code about the Minecraft EULA please tell me.
 
+### The code of [packet_handler.rs](src/network/packet_handler.rs) is a mess we need to rewrite it ; it's too painfull to add features...
+
 ## Why does this project exist?
 
 * Because I like Rust.
