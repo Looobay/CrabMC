@@ -98,7 +98,7 @@ jobs:
 
             **Warning: Experimental software, not for production use!**
             
-            **The sofware is under the Mozilla Public License 2.0 (https://www.mozilla.org/en-US/MPL/2.0/)**
+            **The software is under the Mozilla Public License 2.0 (https://www.mozilla.org/en-US/MPL/2.0/)**
 
             - Linux and macOS users: Run with `sudo` for proper file permissions.
             - macOS: If blocked by security, allow the program in your settings.
@@ -128,7 +128,7 @@ jobs:
           path: ./windows-binaries
 
       - name: Upload Linux Binary to Release
-        uses: actions/upload-release-asset@v2
+        uses: svenstaro/upload-release-action@v2 # Utilise une action plus à jour pour upload les assets
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./linux-binaries/CrabMC-linux.tar.gz
@@ -138,7 +138,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload macOS Binary to Release
-        uses: actions/upload-release-asset@v2
+        uses: svenstaro/upload-release-action@v2
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./macos-binaries/CrabMC-macos.tar.gz
@@ -148,7 +148,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Windows Binary to Release
-        uses: actions/upload-release-asset@v2
+        uses: svenstaro/upload-release-action@v2
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./windows-binaries/CrabMC-windows.tar.gz
