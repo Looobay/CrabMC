@@ -5,8 +5,8 @@ use std::io::Write;
 use std::net::TcpStream;
 
 //================================================================================================================
-//                         This function handle EVERY packets from Minecraft Client.
-// To understand this file I recommand you to check this web site => https://wiki.vg (don't forget to set 1.20.2).
+//                         This function handle EVERY packet from Minecraft Client.
+// To understand this file I recommend you to check this website => https://wiki.vg (don't forget to set 1.20.2).
 //                 https://wiki.vg/Protocol_FAQ#What.27s_the_normal_login_sequence_for_a_client.3F
 //================================================================================================================
 pub fn packet_listener(data: Vec<u8>, state: &mut u8, stream: &mut TcpStream) {
@@ -252,6 +252,7 @@ fn handle_acknowledge_finish_configuration(data: &Vec<u8>, state: &mut u8) {
     info!("State = 3 (Play)");
 }
 
+// The issue for now is that the client do not send something after we use this so the error is maybe here...
 fn send_clientbound_known_packs(stream: &mut TcpStream) {
     let id = 0x0E;
 

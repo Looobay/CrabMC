@@ -31,6 +31,7 @@ pub fn start_tcp_server_listener(address: String) {
     }
 }
 
+// Ok dude this function is fire
 fn handle_client(mut stream: TcpStream) {
     let mut state: u8 = 0;
     let mut buffer = vec![0; 1000];

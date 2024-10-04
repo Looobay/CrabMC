@@ -12,11 +12,13 @@ opt-level = "z" # z = max opti
 lto = true      # Link Time Optimization
 
 [dependencies]
-chrono = "0.4.38"       # Time
-clap = "4.5.16"         # Command Line
-log = "0.4.1"           # Logs
-rand = "0.8.5"          # Random
-tiny_http = "0.12.0"    # HTTP
-colored = "2.1.0"       # Colored logs
-fern = "0.6.2"          # Save logs
-native-dialog = "0.7.0" # Info box
+# ✅ = certified by https://blessed.rs
+# ☑️ = certified by me :)
+chrono = "0.4.38"# Time (used for the logs) ✅
+clap = "4.5.16"# Command Line ✅
+log = "0.4.1"# Logs ✅
+rand = "0.8.5"# Random ✅
+tiny_http = "0.12.0"# HTTP ☑️
+colored = "2.1.0"# Colored logs ☑️
+fern = "0.6.2"# Save logs (maybe some security issues https://rustsec.org/advisories/RUSTSEC-2021-0145.html)
+native-dialog = "0.7.0"# Info box (native pop-up) ☑️

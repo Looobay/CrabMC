@@ -69,6 +69,8 @@ pub fn has_agreed_to_eula() -> io::Result<()> {
     }
 }
 
+// Please don't be angry about this it was necessary lmao
+
 #[cfg(target_os = "macos")]
 pub fn has_agreed_to_eula() -> io::Result<()> {
     let eula_path = Path::new(EULA_FILENAME);
